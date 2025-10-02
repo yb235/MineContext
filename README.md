@@ -309,6 +309,23 @@ python -m opencontext.cli start --config /path/to/config.yaml
 - [Email Support](mailto:minecontext@bytedance.com): Feedback and questions about using MineContext.
 - <a href="Online Supportl">WeChat Group</a>: Discuss SwanLab usage and share the latest AI technologies.
 
+## 📚 Documentation
+
+We've created comprehensive documentation to help you understand and use MineContext:
+
+### For Users
+- **[Getting Started Guide](docs/01-getting-started.md)** - Installation and setup
+- **[User Guide](docs/02-user-guide.md)** - Complete feature guide
+
+### For Developers
+- **[Architecture Overview](docs/03-architecture-overview.md)** - System design and components
+- **[Data Flow & Workflow](docs/04-data-flow-workflow.md)** - Processing pipeline
+- **[API Reference](docs/06-api-reference.md)** - Complete API documentation
+- **[Configuration Guide](docs/05-configuration-guide.md)** - All configuration options
+- **[Development Guide](docs/12-development-guide.md)** - Contributing and extending
+
+**[📖 View All Documentation](docs/README.md)**
+
 ## 📃 License
 
 This repository is licensed under the Apache 2.0 License.
