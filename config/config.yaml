@@ -13,19 +13,19 @@ logging:
 user_setting_path: "${CONTEXT_PATH:.}/config/user_setting.yaml"
 
 vlm_model:
-  base_url: "${LLM_BASE_URL}"
-  api_key: "${LLM_API_KEY}"
-  model: "${LLM_MODEL}"
-  provider: ""
+  base_url: "https://openrouter.ai/api/v1"
+  api_key: "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"
+  model: "openai/gpt-5-codex"
+  provider: "openai"
   # max_tokens: 4096
   temperature: 0.7
 
 embedding_model:
-  base_url: "${EMBEDDING_BASE_URL}"
-  api_key: "${EMBEDDING_API_KEY}"
-  model: "${EMBEDDING_MODEL}"
-  provider: ""
-  output_dim: 2048
+  base_url: "https://openrouter.ai/api/v1"
+  api_key: "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"
+  model: "openai/text-embedding-ada-002"
+  provider: "openai"
+  output_dim: 1536
 
 # Context capture module
 capture:
