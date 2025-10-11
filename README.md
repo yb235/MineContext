@@ -1,12 +1,22 @@
 <div align="center">
 
 <picture>
-  <img alt="MineContext" src="src/MineContext-Banner.svg" width="80%" height="auto">
+  <img alt="MineContext" src="src/MineContext-Banner.svg" width="100%" height="auto">
 </picture>
+
+### MineContext：Create with Context,Clarity from Chaos
 
 An open-source,proactive context-aware AI partner,dedicated to bringing clarity and efficiency to your work, study and creation.
 
 <a href="https://github.com/volcengine/MineContext/issues">Report Issues</a> · <a href="https://bytedance.larkoffice.com/share/base/form/shrcnPAjJtlufuhBZGegll41NOh">Feedback</a>
+
+[![][release-shield]][release-link]
+[![][github-stars-shield]][github-stars-link]
+[![][github-issues-shield]][github-issues-shield-link]
+[![][github-contributors-shield]][github-contributors-link]
+[![][license-shield]][license-shield-link]  
+[![][last-commit-shield]][last-commit-shield-link]
+[![][wechat-shield]][wechat-shield-link]
 
 [中文](README_zh.md) / English
 
@@ -14,7 +24,7 @@ An open-source,proactive context-aware AI partner,dedicated to bringing clarity 
 
 🌍  Join our [Discord Group](https://discord.gg/tGj7RQ3nUR)
 
-[App Download for Mac](https://github.com/volcengine/MineContext/releases/tag/0.1.0)
+[App Download for Mac](https://github.com/volcengine/MineContext/releases/download/0.1.1/MineContext-0.1.1.dmg)
 
 </div>
 
@@ -41,8 +51,9 @@ Table of Contents
   - [Installation](#installation)
   - [Configuration](#configuration)
   - [Running the Server](#running-the-server)
-    - [👥 Community](#-community)
+- [👥 Community](#-community)
   - [Community and Support](#community-and-support)
+- [Star History](#star-history)
 - [📃 License](#-license)
 
 <br>
@@ -133,7 +144,8 @@ We will prioritize the expansion of Context Sources according to the following p
 
 | Context Capture Capability   | Context Source                     | Priority | Completion Status |
 | :--------------------------- | :--------------------------------- | :------- | :---------------- |
-| Desktop Screenshot Monitor   | User PC Information                | P0       | ✅                |
+| Screen Screenshot            | User PC Information                | P0       | ✅                |
+| Note Editing                 | Application Internal Creation Information | P0       | ✅                |
 | Link Upload                  | Internet Information               | P0       |                   |
 | File Upload                  | Structured Documents               | P1       |                   |
 | File Upload                  | Unstructured Documents             | P1       |                   |
@@ -235,7 +247,7 @@ opencontext/
    - Multi-modal content processing (text, images)
 5. **Storage Layer** (`storage/`)
 
-   - Multi-backend support (SQLite, ChromaDB, VikingDB)
+   - Multi-backend support (SQLite, ChromaDB)
    - Vector storage for similarity search
    - Unified storage interface
 6. **LLM Integration** (`llm/`)
@@ -248,16 +260,18 @@ opencontext/
 
 ### Installation
 
+We recommend using [uv](https://docs.astral.sh/uv/) for fast and reliable package management:
+
 ```bash
 # Clone repository
 git clone https://github.com/volcengine/MineContext.git
 cd MineContext
 
-python -m venv venv
-source venv/bin/activate
+# Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Install dependencies
-pip install -r requirements.txt
+# Sync dependencies (automatically creates virtual environment)
+uv sync
 ```
 
 ### Configuration
@@ -271,20 +285,20 @@ server:
   debug: false
 
 embedding_model:
-  provider: doubao  # 选项: openai, doubao
+  provider: doubao  # options: openai, doubao
   api_key: your-api-key
   model: doubao-embedding-large-text-240915
 
 vlm_model:
-  provider: doubao  # 选项: openai, doubao
+  provider: doubao  # options: openai, doubao
   api_key: your-api-key
   model: doubao-seed-1-6-flash-250828
 
 capture:
   enabled: true
   screenshot:
-    enabled: true # 开启截图捕获
-    capture_interval: 5  # 截图间隔（秒）
+    enabled: true # enable screenshot capture
+    capture_interval: 5  # capture interval in seconds
 ```
 
 2. **Prompt Templates** (`config/prompts_*.yaml`):
@@ -295,19 +309,42 @@ capture:
 
 ```bash
 # Start with default configuration
-python -m opencontext.cli start
+uv run opencontext start
 
 # Start with custom config
-python -m opencontext.cli start --config /path/to/config.yaml
+uv run opencontext start --config /path/to/config.yaml
+
+# Start with custom port (useful for avoiding conflicts)
+uv run opencontext start --port 8000
 ```
 
-#### 👥 Community
+**Available Options:**
+- `--config`: Path to configuration file
+- `--host`: Host address (default: from config or `localhost`)
+- `--port`: Port number (default: from config or `8000`)
+
+**Priority**: Command-line arguments > Config file > Default values
+
+Alternatively, you can activate the virtual environment manually:
+
+```bash
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -e .
+opencontext start --port 8000
+```
+
+## 👥 Community
 
 ### Community and Support
 
-- [GitHub Issues](https://github.com/bytedance/MineContext/issues): Errors and issues encountered while using MineContext.
+- [GitHub Issues](https://github.com/volcengine/MineContext/issues): Errors and issues encountered while using MineContext.
 - [Email Support](mailto:minecontext@bytedance.com): Feedback and questions about using MineContext.
-- <a href="Online Supportl">WeChat Group</a>: Discuss SwanLab usage and share the latest AI technologies.
+- <a href="https://bytedance.larkoffice.com/wiki/Hg6VwrxnTiXtWUkgHexcFTqrnpg">WeChat Group</a>: Discuss SwanLab usage and share the latest AI technologies.
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=volcengine/MineContext&type=Timeline)](https://www.star-history.com/#volcengine/MineContext&Timeline)
+
 
 ## 📚 Documentation
 

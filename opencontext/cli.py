@@ -121,22 +121,32 @@ def start_web_server(context_lab_instance: OpenContext, host: str, port: int, wo
 
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments.
-    
+
     Returns:
         Parsed command line arguments
     """
     parser = argparse.ArgumentParser(
         description="OpenContext - Context capture, processing, storage and consumption system"
     )
-    
+
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
-    
+
     # Start command
-    start_parser = subparsers.add_parser("start", help="Start OpenContext")
+    start_parser = subparsers.add_parser("start", help="Start OpenContext server")
     start_parser.add_argument(
-        "-c", "--config", 
-        type=str, 
+        "--config",
+        type=str,
         help="Configuration file path"
+    )
+    start_parser.add_argument(
+        "--host",
+        type=str,
+        help="Host address (overrides config file)"
+    )
+    start_parser.add_argument(
+        "--port",
+        type=int,
+        help="Port number (overrides config file)"
     )
     start_parser.add_argument(
         "--workers",
@@ -145,36 +155,6 @@ def parse_args() -> argparse.Namespace:
         help="Number of worker processes (default: 1)"
     )
 
-    # Initialize command  
-    init_parser = subparsers.add_parser("init", help="Initialize configuration")
-    init_parser.add_argument(
-        "-o", "--output", 
-        type=str, 
-        default="./config/config.yaml", 
-        help="Output configuration file path"
-    )
-    
-    # Web command
-    web_parser = subparsers.add_parser("web", help="Start web interface")
-    web_parser.add_argument(
-        "--host", 
-        type=str, 
-        default="localhost",
-        help="Host address"
-    )
-    web_parser.add_argument(
-        "--port", 
-        type=int, 
-        default=8080,
-        help="Port number"
-    )
-    web_parser.add_argument(
-        "--workers",
-        type=int,
-        default=1,
-        help="Number of worker processes (default: 1)"
-    )
-    
     return parser.parse_args()
 
 
@@ -214,10 +194,10 @@ def _run_headless_mode(lab_instance: OpenContext) -> None:
 
 def handle_start(args: argparse.Namespace) -> int:
     """Handle the start command.
-    
+
     Args:
         args: Parsed command line arguments
-        
+
     Returns:
         Exit code (0 for success, 1 for failure)
     """
@@ -229,11 +209,13 @@ def handle_start(args: argparse.Namespace) -> int:
     logger.info("Starting all modules")
     lab_instance.start_capture()
 
-    web_config = lab_instance.config.get("web", {})
+    from opencontext.config.global_config import get_config
+    web_config = get_config("web")
     if web_config.get("enabled", True):
-        host = web_config.get("host", "localhost")
-        port = web_config.get("port", 8080)
-        
+        # Command line arguments override config file
+        host = args.host if args.host else web_config.get("host", "localhost")
+        port = args.port if args.port else web_config.get("port", 8000)
+
         try:
             logger.info(f"Starting web server on {host}:{port}")
             workers = getattr(args, 'workers', 1)
@@ -243,7 +225,7 @@ def handle_start(args: argparse.Namespace) -> int:
             lab_instance.shutdown()
     else:
         _run_headless_mode(lab_instance)
-    
+
     return 0
 def _setup_logging(config_path: Optional[str]) -> None:
     """Setup logging configuration.
@@ -251,31 +233,28 @@ def _setup_logging(config_path: Optional[str]) -> None:
     Args:
         config_path: Optional path to configuration file
     """
-    config_manager = ConfigManager()
-    if config_path:
-        config_manager.load_config(config_path)
-    else:
-        config_manager.update_config(config_manager.get_default_config())
-    
-    setup_logging(config_manager.get_config().get('logging', {}))
+    from opencontext.config.global_config import GlobalConfig
+    GlobalConfig.get_instance().initialize(config_path)
+
+    setup_logging(GlobalConfig.get_instance().get_config('logging'))
 
 def main() -> int:
     """Main entry point.
-    
+
     Returns:
         Exit code (0 for success, non-zero for failure)
     """
     args = parse_args()
-    
+
     # Setup logging first
-    _setup_logging(args.config)
-    
+    _setup_logging(getattr(args, 'config', None))
+
     logger.debug(f"Command line arguments: {args}")
-    
+
     if not args.command:
-        logger.error("No command specified. Use --help for usage information.")
+        logger.error("No command specified. Use 'opencontext start' or 'opencontext --help' for usage.")
         return 1
-    
+
     if args.command == "start":
         return handle_start(args)
     else:
